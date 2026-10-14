@@ -38,7 +38,7 @@ document.querySelector("#cartItems").addEventListener("click",e=>{const b=e.targ
 document.querySelector("#filters").addEventListener("click",e=>{const b=e.target.closest("[data-filter]");if(!b)return;filter=b.dataset.filter;document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x===b));renderProducts()});
 search.addEventListener("input",renderProducts);
 document.querySelector("#cartNav").addEventListener("click",openCart);document.querySelector("#headerCart").addEventListener("click",openCart);document.querySelector("#closeCart").addEventListener("click",closeCart);document.querySelector("#cartBackdrop").addEventListener("click",closeCart);
-document.querySelector("#menuBtn").addEventListener("click",()=>document.querySelector("#products").scrollIntoView({behavior:"smooth"}));
+const menuBtn=document.querySelector("#menuBtn");if(menuBtn)menuBtn.addEventListener("click",()=>document.querySelector("#products").scrollIntoView({behavior:"smooth"}));
 document.querySelector("#checkoutBtn").addEventListener("click",()=>{if(!getOrderEntries().length)return;openCustomerModal()});
 document.querySelector("#closeCustomerModal").addEventListener("click",closeCustomerModal);
 document.querySelector("#customerModal").addEventListener("click",e=>{if(e.target.id==="customerModal")closeCustomerModal()});
