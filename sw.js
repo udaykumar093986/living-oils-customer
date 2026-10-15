@@ -1,4 +1,4 @@
-const CACHE = "living-oils-customer-v10";
+const CACHE = "living-oils-customer-v11";
 const ASSETS = [
   "./",
   "./index.html",
@@ -26,7 +26,8 @@ const ASSETS = [
   "./assets/cold-pressed-photo.jpg",
   "./assets/sunflower-photo.jpg",
   "./assets/coconut-photo.jpg",
-  "./assets/white-sesame-photo.jpg"
+  "./assets/white-sesame-photo.jpg",
+  "./assets/banner.png"
 ];
 
 self.addEventListener("install", (e) => {
@@ -52,12 +53,12 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-// Network-first for HTML and scripts, cache-fallback for offline images
+// Network-first for pages, scripts, and styles; cache-fallback for offline assets
 self.addEventListener("fetch", (e) => {
   if (e.request.method !== "GET") return;
   
   const url = new URL(e.request.url);
-  const isCodeOrPage = url.pathname.endsWith(".html") || url.pathname.endsWith(".js") || url.pathname.endsWith("/") || !url.pathname.includes(".");
+  const isCodeOrPage = url.pathname.endsWith(".html") || url.pathname.endsWith(".js") || url.pathname.endsWith(".css") || url.pathname.endsWith("/") || !url.pathname.includes(".");
 
   if (isCodeOrPage) {
     e.respondWith(
