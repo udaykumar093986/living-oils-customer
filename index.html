@@ -16,6 +16,10 @@
     </div>
   </div>
   <div class="topbar-actions">
+    <button class="header-admin-btn" id="headerAdminBtn" type="button" aria-label="Admin portal">
+      <span class="admin-glyph">🔐</span>
+      <span class="admin-text">Admin</span>
+    </button>
     <button class="header-cart" id="headerCart" aria-label="View shopping cart">
       <span class="cart-glyph">🛒</span>
       <span class="cart-text">Cart</span>
@@ -39,7 +43,25 @@
   <div class="store-copy"><span class="eyebrow">VISIT LIVING OILS</span><h2>From our store to your home.</h2><p>Explore our cold-pressed oils and place your order directly through our store.</p><a class="primary-btn store-cta" href="#products">Shop oils online <span>↓</span></a></div>
 </section>
 <footer id="contact"><img src="assets/living-oils-logo.jpg" alt="Living Oils logo" class="footer-logo"><div><strong>Living Oils</strong><p>25/13/88, BV Nagar, Nellore</p><p>Phone: +91 96762 74545</p></div><a class="footer-link" href="#products">Browse oils ↑</a></footer>
-<nav class="bottom-nav"><a href="#products"><span>▦</span>Products</a><button id="cartNav"><span>🛒</span>Cart <b id="navCount">0</b></button><a href="#contact"><span>⚙</span>Contact</a></nav>
+<nav class="bottom-nav" aria-label="Mobile Navigation">
+  <a href="#products" class="bottom-nav-btn nav-btn-products">
+    <span class="nav-icon">▦</span>
+    <span class="nav-label">Products</span>
+  </a>
+  <button id="cartNav" class="bottom-nav-btn nav-btn-cart" type="button" aria-label="View shopping cart">
+    <span class="nav-icon">🛒</span>
+    <span class="nav-label">Cart</span>
+    <b id="navCount" class="nav-badge">0</b>
+  </button>
+  <a href="#contact" class="bottom-nav-btn nav-btn-contact">
+    <span class="nav-icon">📞</span>
+    <span class="nav-label">Contact</span>
+  </a>
+  <button id="adminNavBtn" class="bottom-nav-btn nav-btn-admin" type="button" aria-label="Admin portal">
+    <span class="nav-icon">🔐</span>
+    <span class="nav-label">Admin</span>
+  </button>
+</nav>
 <div class="toast" id="toast" role="status"></div>
 <div class="cart-backdrop" id="cartBackdrop"></div>
 <aside class="cart-panel" id="cartPanel" aria-label="Shopping cart" aria-hidden="true">
@@ -75,6 +97,158 @@
     </div>
     <p style="font-size: 13px; color: var(--muted); margin-bottom: 22px;">Our team will call or message your phone number (<strong id="successPhone"></strong>) to confirm dispatch and delivery.</p>
     <button class="checkout-btn" id="closeSuccessBtn" type="button" style="justify-content: center;">Continue Shopping</button>
+  </div>
+</div>
+
+<!-- Admin Login Modal -->
+<div class="customer-modal" id="adminLoginModal" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle" aria-hidden="true">
+  <div class="customer-modal-card" style="max-width: 420px;">
+    <div class="customer-modal-head">
+      <div>
+        <span class="eyebrow" style="color: var(--teal-dark);">SECURE PORTAL</span>
+        <h2 id="adminLoginTitle">Admin Login</h2>
+      </div>
+      <button id="closeAdminLoginModal" class="icon-btn" type="button" aria-label="Close login modal">×</button>
+    </div>
+    <p class="customer-modal-note">Enter your admin password to manage products, pack sizes, and prices.</p>
+    <form id="adminLoginForm">
+      <label for="adminPasswordInput">Password</label>
+      <div style="position: relative;">
+        <input id="adminPasswordInput" name="password" type="password" autocomplete="current-password" placeholder="Enter admin password" required style="padding-right: 42px;">
+        <button type="button" id="toggleAdminPwdBtn" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); border: 0; background: transparent; cursor: pointer; font-size: 16px; color: var(--muted);" aria-label="Toggle password visibility">👁️</button>
+      </div>
+      <div id="adminLoginError" style="display: none; color: #b30e2a; font-size: 12px; font-weight: 700; margin-top: 6px;"></div>
+      <button class="checkout-btn" id="submitAdminLoginBtn" type="submit" style="margin-top: 14px; justify-content: center;">
+        Login as Admin <span>➔</span>
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Admin Management Modal -->
+<div class="customer-modal" id="adminManageModal" role="dialog" aria-modal="true" aria-labelledby="adminManageTitle" aria-hidden="true">
+  <div class="customer-modal-card admin-manage-card">
+    <div class="customer-modal-head">
+      <div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="eyebrow" style="color: #20a765;">ADMIN ACTIVE</span>
+          <span style="font-size: 10.5px; background: #e7f7f1; color: var(--teal-dark); padding: 2px 8px; border-radius: 999px; font-weight: 750;">Store Manager</span>
+        </div>
+        <h2 id="adminManageTitle" style="margin-top: 4px;">Products &amp; Prices</h2>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button id="adminLogoutBtn" class="btn-subtle" type="button" title="Logout from Admin">🚪 Logout</button>
+        <button id="closeAdminManageModal" class="icon-btn" type="button" aria-label="Close admin modal">×</button>
+      </div>
+    </div>
+
+    <!-- Admin Navigation Tabs -->
+    <div class="admin-tabs" id="adminTabs">
+      <button class="admin-tab active" data-tab="prices" type="button">💰 Update Prices</button>
+      <button class="admin-tab" data-tab="add" type="button">➕ Add New Product</button>
+      <button class="admin-tab" data-tab="settings" type="button">⚙️ Settings</button>
+    </div>
+
+    <!-- Tab 1: Update Prices & Products List -->
+    <div class="admin-tab-content active" id="tabContentPrices">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 8px; flex-wrap: wrap;">
+        <span style="font-size: 12.5px; color: var(--muted);">Edit pack prices directly below. Changes take effect on the store immediately.</span>
+        <button type="button" id="saveAllPricesBtn" class="btn-save-prod" style="padding: 7px 16px;">💾 Save All Prices</button>
+      </div>
+      <div id="adminProductList" class="admin-product-list">
+        <!-- Rendered via JavaScript -->
+      </div>
+    </div>
+
+    <!-- Tab 2: Add New Product Form -->
+    <div class="admin-tab-content" id="tabContentAdd">
+      <form id="adminAddProductForm" class="admin-add-form">
+        <div class="form-row">
+          <div>
+            <label for="newProdEn">English Name *</label>
+            <input id="newProdEn" type="text" placeholder="e.g. Almond Oil" required>
+          </div>
+          <div>
+            <label for="newProdName">Telugu Name *</label>
+            <input id="newProdName" type="text" placeholder="e.g. బాదం నూనె" required>
+          </div>
+        </div>
+
+        <label for="newProdDesc">Description</label>
+        <textarea id="newProdDesc" rows="2" placeholder="e.g. 100% natural cold-pressed oil with high nutritional value."></textarea>
+
+        <label style="margin-top: 8px;">Pack Prices (₹) *</label>
+        <div class="admin-prices-grid">
+          <div class="price-input-box">
+            <span class="size-tag">1 litre (1000 ml)</span>
+            <div class="rupee-input-wrapper">
+              <span class="rupee-sym">₹</span>
+              <input type="number" id="newPrice1000" min="1" placeholder="500" required>
+            </div>
+          </div>
+          <div class="price-input-box">
+            <span class="size-tag">500 ml</span>
+            <div class="rupee-input-wrapper">
+              <span class="rupee-sym">₹</span>
+              <input type="number" id="newPrice500" min="1" placeholder="260">
+            </div>
+          </div>
+          <div class="price-input-box">
+            <span class="size-tag">250 ml (optional)</span>
+            <div class="rupee-input-wrapper">
+              <span class="rupee-sym">₹</span>
+              <input type="number" id="newPrice250" min="1" placeholder="140">
+            </div>
+          </div>
+        </div>
+
+        <label style="margin-top: 10px;">Select Product Image</label>
+        <div class="image-preset-picker" id="presetPicker">
+          <!-- Preset buttons for quick selection generated by JS -->
+        </div>
+        <div style="margin-top: 8px;">
+          <input id="newProdImage" type="text" placeholder="Or enter image URL (assets/... or https://...)" value="assets/coconut-product.jpg">
+        </div>
+        <div style="margin-top: 6px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <label class="btn-subtle" style="margin: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 600;">
+            📁 Upload Custom Photo
+            <input type="file" id="newProdFileInput" accept="image/*" style="display: none;">
+          </label>
+          <span id="uploadFileName" style="font-size: 11px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 220px;"></span>
+        </div>
+
+        <div style="margin-top: 14px; display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="newProdPopular" style="width: auto; margin: 0; cursor: pointer;">
+          <label for="newProdPopular" style="margin: 0; cursor: pointer; font-weight: 600;">Mark as "Popular" product</label>
+        </div>
+
+        <button type="submit" class="checkout-btn" style="margin-top: 18px; justify-content: center;">
+          ＋ Add Product to Store
+        </button>
+      </form>
+    </div>
+
+    <!-- Tab 3: Settings -->
+    <div class="admin-tab-content" id="tabContentSettings">
+      <div style="display: grid; gap: 16px;">
+        <div class="admin-card-section">
+          <h4 style="margin: 0 0 6px;">Change Admin Password</h4>
+          <form id="adminChangePasswordForm" style="display: grid; gap: 8px;">
+            <label for="currentAdminPwd">Current Password</label>
+            <input type="password" id="currentAdminPwd" required placeholder="Current password">
+            <label for="newAdminPwd">New Password</label>
+            <input type="password" id="newAdminPwd" minlength="4" required placeholder="New password (min 4 characters)">
+            <button type="submit" class="add-btn" style="margin-top: 4px; align-self: flex-start;">Update Password</button>
+          </form>
+        </div>
+
+        <div class="admin-card-section">
+          <h4 style="margin: 0 0 6px; color: #b30e2a;">Reset Catalog to Default</h4>
+          <p style="margin: 0 0 10px; font-size: 12px; color: var(--muted);">Restore the original 6 default oil products and their starting prices.</p>
+          <button type="button" id="resetProductsBtn" class="btn-danger">↺ Restore Default Products</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
