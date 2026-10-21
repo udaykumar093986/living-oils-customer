@@ -1,4 +1,4 @@
-const CACHE = "living-oils-customer-v11";
+const CACHE = "living-oils-customer-v12";
 const ASSETS = [
   "./",
   "./index.html",
